@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信创工坊社团 | 校园No.1 成长型社团</title>
+    <style>
+        /* 全局重置与南孚风格核心变量 */
+        :root {
+            --nanfu-black: #000000;
+            --nanfu-white: #ffffff;
+            --nanfu-gray: #f5f5f5;
+            --nanfu-dark-gray: #666666;
+            --nanfu-red: #d92121;
+            --nanfu-red-deep: #b81a1a;
+            --font-main: 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --transition-base: all 0.3s ease;
+            --transition-advanced: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-base: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--nanfu-white);
+            color: var(--nanfu-black);
+            line-height: 1.4;
+            overflow-x: hidden;
+            /* 页面加载渐显 */
+            opacity: 0;
+            animation: pageFadeIn 1s ease-out forwards;
+        }
+
+        /* 新增：页面加载整体渐显动画 */
+        @keyframes pageFadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ********** 动态背景样式：南孚风格流动渐变+网格扫描+粒子 ********** */
+        /* 首屏Hero流动渐变背景 */
+        .hero-dynamic-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(120deg, #000000, #222222, #d9212120, #000000);
+            background-size: 300% 300%;
+            animation: nanfuFlow 15s ease-in-out infinite;
+            will-change: background-position;
+        }
+        @keyframes nanfuFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 工业风网格扫描背景 - 核心板块专用 */
+        .nanfu-grid-bg {
+            position: relative;
+            overflow: hidden;
+        }
+        .nanfu-grid-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            z-index: 0;
+            background: 
+                repeating-linear-gradient(90deg, #66666610 0, #66666610 1px, transparent 1px, transparent 50px),
+                repeating-linear-gradient(0deg, #66666610 0, #66666610 1px, transparent 1px, transparent 50px);
+            animation: gridMove 40s linear infinite;
+        }
+        .nanfu-grid-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(90deg, transparent, #d9212110, transparent);
+            animation: gridScan 15s linear infinite;
+        }
+        @keyframes gridMove {
+            100% { transform: translate(-25%, -25%); }
+        }
+        @keyframes gridScan {
+            100% { left: 100%; }
+        }
+        .nanfu-grid-bg > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 导航栏 - 南孚极简固定导航（新增高级滚动动效） */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.5rem 3rem;
+            /* 新增：背景模糊+细腻阴影 */
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--nanfu-gray);
+            box-shadow: var(--shadow-base);
+            transition: var(--transition-advanced);
+        }
+
+        /* 新增：导航栏滚动后的强化效果 */
+        nav.scrolled {
+            padding: 1rem 3rem;
+            box-shadow: var(--shadow-hover);
+            background-color: rgba(255, 255, 255, 0.98);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--nanfu-black);
+            letter-spacing: -0.5px;
+            /* 新增：logo hover缩放 */
+            transition: var(--transition-base);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo span {
+            color: var(--nanfu-red);
+            /* 新增：logo红色文字渐变 */
+            background: linear-gradient(90deg, var(--nanfu-red), var(--nanfu-red-deep));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--nanfu-black);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition-advanced);
+            position: relative;
+            /* 新增：文字抗锯齿 */
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 优化：导航下划线动画更细腻 */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--nanfu-red), var(--nanfu-red-deep));
+            border-radius: 1px;
+            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .nav-links a:hover {
+            color: var(--nanfu-red);
+            /* 新增：hover轻微上移 */
+            transform: translateY(-2px);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 移动端汉堡菜单（新增动画） */
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: var(--transition-base);
+            /* 新增：避免文字选中 */
+            user-select: none;
+        }
+
+        .hamburger:hover {
+            color: var(--nanfu-red);
+            transform: scale(1.1);
+        }
+
+        /* Hero首屏 - 南孚核心slogan风格（新增视差+逐字动画） */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            text-align: center;
+            /* 新增：视差容器 */
+            transform: translateY(0);
+            transition: transform 0.5s ease;
+        }
+
+        .hero h1 {
+            font-size: 7rem;
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 2rem;
+            letter-spacing: -3px;
+            /* 新增：文字分层 */
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+        }
+
+        .hero h1 .no1 {
+            color: var(--nanfu-red);
+            display: block;
+            font-size: 8rem;
+            /* 新增：no1文字脉冲动画 */
+            animation: numberPulse 3s ease-in-out infinite;
+        }
+
+        /* 新增：数字脉冲动画 */
+        @keyframes numberPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero .slogan {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: block;
+            /* 新增：渐变文字 */
+            background: linear-gradient(90deg, #000, #333, var(--nanfu-red));
+            background-size: 200% 100%;
+            animation: textGradient 8s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* 新增：文字渐变动画 */
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero .certification {
+            font-size: 1rem;
+            color: var(--nanfu-dark-gray);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            /* 新增：淡入延迟 */
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        /* 3大核心理由 - 南孚3 Reasons结构（新增卡片hover效果） */
+        .reasons-section {
+            padding: 8rem 2rem;
+            background-color: var(--nanfu-gray);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 5rem;
+            letter-spacing: -1px;
+            /* 新增：标题逐字动画容器 */
+            overflow: hidden;
+        }
+
+        /* 新增：逐字渐显动画 */
+        .char-animate {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: charFadeIn 0.5s ease forwards;
+        }
+
+        @keyframes charFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reasons-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 4rem;
+        }
+
+        .reason-card {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--nanfu-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow-base);
+            transition: var(--transition-advanced);
+            /* 新增：卡片预设3D效果 */
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        /* 新增：reason卡片hover 3D效果 */
+        .reason-card:hover {
+            transform: perspective(1000px) rotateY(5deg) translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border: 1px solid var(--nanfu-red);
+        }
+
+        .reason-card .number {
+            font-size: 6rem;
+            font-weight: 900;
+            color: var(--nanfu-red);
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            display: block;
+            /* 新增：数字渐变 */
+            background: linear-gradient(180deg, var(--nanfu-red), var(--nanfu-red-deep));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .reason-card h3 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .reason-card p {
+            font-size: 1.1rem;
+            color: var(--nanfu-dark-gray);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .reason-card .cert {
+            font-size: 0.9rem;
+            color: var(--nanfu-dark-gray);
+            font-style: italic;
+        }
+
+        /* 核心优势板块 - 南孚产品技术风格（新增图片hover缩放） */
+        .advantage-section {
+            padding: 8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .advantage-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        .advantage-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .advantage-content h3 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+        }
+
+        .advantage-content .highlight {
+            color: var(--nanfu-red);
+            /* 新增：高亮文字发光 */
+            text-shadow: 0 0 10px rgba(217, 33, 33, 0.2);
+        }
+
+        .advantage-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--nanfu-dark-gray);
+            margin-bottom: 1rem;
+        }
+
+        .advantage-image {
+            width: 100%;
+            height: 400px;
+            background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            border-radius: 0;
+            /* 新增：图片hover缩放+滤镜 */
+            transition: var(--transition-advanced);
+            filter: grayscale(10%);
+        }
+
+        .advantage-image:hover {
+            transform: scale(1.02);
+            filter: grayscale(0%);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* 部门板块 - 南孚产品系列风格（强化3D hover） */
+        .department-section {
+            padding: 8rem 2rem;
+            background-color: var(--nanfu-gray);
+        }
+
+        .department-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .department-card {
+            background-color: var(--nanfu-white);
+            padding: 3rem 2rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            transition: var(--transition-advanced);
+            /* 新增：3D基础配置 */
+            transform: perspective(800px) rotateX(0deg) translateY(0);
+        }
+
+        /* 新增：部门卡片高级3D hover */
+        .department-card:hover {
+            transform: perspective(800px) rotateX(5deg) translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--nanfu-red);
+            /* 新增：卡片内发光 */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 0 15px rgba(217, 33, 33, 0.05) inset;
+        }
+
+        .department-card .serial-number {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--nanfu-red);
+            margin-bottom: 1.5rem;
+            display: block;
+            /* 新增：序号动画 */
+            transition: var(--transition-base);
+        }
+
+        .department-card:hover .serial-number {
+            transform: scale(1.1);
+        }
+
+        .department-card h3 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+        }
+
+        .department-card p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--nanfu-dark-gray);
+        }
+
+        /* 发展历程 - 南孚历史风格（新增时间轴动画） */
+        .history-section {
+            padding: 8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .timeline {
+            position: relative;
+            margin-top: 4rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--nanfu-black), var(--nanfu-red), var(--nanfu-black));
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition-advanced);
+        }
+
+        /* 新增：时间轴项可见时动画 */
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            grid-column: 2 / 3;
+            text-align: left;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            grid-column: 1 / 2;
+            text-align: right;
+        }
+
+        .timeline-year {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--nanfu-red);
+            margin-bottom: 1rem;
+            /* 新增：年份hover缩放 */
+            transition: var(--transition-base);
+        }
+
+        .timeline-item:hover .timeline-year {
+            transform: scale(1.1);
+            text-shadow: 0 0 15px rgba(217, 33, 33, 0.2);
+        }
+
+        .timeline-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--nanfu-dark-gray);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 1rem;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: var(--nanfu-red);
+            border-radius: 50%;
+            z-index: 10;
+            /* 新增：圆点脉冲动画 */
+            animation: dotPulse 3s ease infinite;
+            /* 新增：hover放大 */
+            transition: var(--transition-base);
+        }
+
+        /* 新增：圆点脉冲 */
+        @keyframes dotPulse {
+            0%, 100% { 
+                transform: translateX(-50%) scale(1); 
+                box-shadow: 0 0 0 0 rgba(217, 33, 33, 0.5);
+            }
+            50% { 
+                transform: translateX(-50%) scale(1.1); 
+                box-shadow: 0 0 0 5px rgba(217, 33, 33, 0);
+            }
+        }
+
+        .timeline-item:hover .timeline-dot {
+            width: 25px;
+            height: 25px;
+        }
+
+        /* 报名板块 - 南孚简洁CTA风格（新增表单高级交互） */
+        .contact-section {
+            padding: 8rem 2rem;
+            background-color: var(--nanfu-black);
+            color: var(--nanfu-white);
+            text-align: center;
+            /* 新增：背景渐变 */
+            background: linear-gradient(180deg, #000, #111, #000);
+        }
+
+        .contact-section h2 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+        }
+
+        .contact-section h2 span {
+            color: var(--nanfu-red);
+            /* 新增：红色文字发光 */
+            text-shadow: 0 0 10px rgba(217, 33, 33, 0.3);
+        }
+
+        .contact-section .sub-title {
+            font-size: 1.5rem;
+            margin-bottom: 4rem;
+            color: #cccccc;
+        }
+
+        .contact-grid {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .contact-item h4 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: var(--nanfu-red);
+            /* 新增：hover上移 */
+            transition: var(--transition-base);
+        }
+
+        .contact-item:hover h4 {
+            transform: translateY(-3px);
+        }
+
+        .contact-item p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #cccccc;
+        }
+
+        /* 报名表单（新增浮动标签+高级交互） */
+        .signup-form {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        /* 新增：表单分组（用于浮动标签） */
+        .form-group {
+            position: relative;
+            grid-column: span 1;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .signup-form input, .signup-form select {
+            width: 100%;
+            padding: 1.2rem 1rem 0.5rem;
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 4px;
+            color: var(--nanfu-white);
+            font-size: 1rem;
+            font-family: var(--font-main);
+            transition: var(--transition-advanced);
+            /* 新增：移除默认样式 */
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* 新增：浮动标签样式 */
+        .form-label {
+            position: absolute;
+            left: 1rem;
+            top: 1.2rem;
+            color: #999;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        /* 新增：焦点/有值时标签上浮 */
+        .signup-form input:focus ~ .form-label,
+        .signup-form input:not(:placeholder-shown) ~ .form-label,
+        .signup-form select:focus ~ .form-label,
+        .signup-form select:not(:placeholder-shown) ~ .form-label {
+            top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--nanfu-red);
+        }
+
+        .signup-form input:focus, .signup-form select:focus {
+            outline: none;
+            border-color: var(--nanfu-red);
+            /* 新增：焦点发光 */
+            box-shadow: 0 0 0 3px rgba(217, 33, 33, 0.1);
+            background-color: #222;
+        }
+
+        .signup-form .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .signup-form .submit-btn {
+            background: linear-gradient(90deg, var(--nanfu-red), var(--nanfu-red-deep));
+            color: var(--nanfu-white);
+            border: none;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition-advanced);
+            /* 新增：按钮脉冲+阴影 */
+            box-shadow: 0 4px 15px rgba(217, 33, 33, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 新增：按钮点击波纹效果 */
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .submit-btn:active::after {
+            width: 300px;
+            height: 300px;
+            opacity: 0;
+        }
+
+        .signup-form .submit-btn:hover {
+            background: linear-gradient(90deg, var(--nanfu-red-deep), #9e1414);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 33, 33, 0.3);
+        }
+
+        .signup-form .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 页脚（新增渐变+动画） */
+        footer {
+            background-color: var(--nanfu-black);
+            color: #999999;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid #333333;
+            /* 新增：背景渐变 */
+            background: linear-gradient(180deg, #000, #111);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+            /* 新增：hover变色 */
+            transition: var(--transition-base);
+        }
+
+        footer p:hover {
+            color: var(--nanfu-white);
+        }
+
+        /* 滚动渐入动画（优化） */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            nav.scrolled {
+                padding: 0.8rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: var(--nanfu-white);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                border-bottom: 1px solid var(--nanfu-gray);
+                z-index: 999;
+                /* 新增：移动端菜单动画 */
+                transform: translateY(-20px);
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+
+            .nav-links.active {
+                display: flex;
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .hero h1 .no1 {
+                font-size: 4rem;
+            }
+
+            .hero .slogan {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .reasons-grid, .department-grid, .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reason-card, .department-card {
+                transform: none;
+            }
+
+            .reason-card:hover, .department-card:hover {
+                transform: translateY(-10px);
+            }
+
+            .advantage-block {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .advantage-content h3 {
+                font-size: 2rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .timeline-item:nth-child(even) .timeline-content,
+            .timeline-item:nth-child(odd) .timeline-content {
+                grid-column: 1 / -1;
+                text-align: left;
+                padding-left: 50px;
+            }
+
+            .timeline-dot {
+                left: 11px;
+            }
+
+            .contact-section h2 {
+                font-size: 2.5rem;
+            }
+
+            .signup-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 通用渐入动画 */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 全局轻量粒子动态背景容器 - 最顶部层级最低 -->
+    <canvas id="nanfuParticles" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -999; pointer-events: none;"></canvas>
+
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">信创工坊<span>社团</span></div>
+            <div class="hamburger" id="hamburger">
+                ≡
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#reasons">核心优势</a></li>
+                <li><a href="#departments">部门设置</a></li>
+                <li><a href="#history">发展历程</a></li>
+                <li><a href="#contact">立即报名</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 首屏Hero - 含流动渐变动态背景 -->
+    <div class="hero">
+        <div class="hero-dynamic-bg"></div>
+        <div class="hero-content fade-in" id="heroContent">
+            <h1>
+                <span class="no1">No.1</span>
+                信创工坊社团
+            </h1>
+            <span class="slogan">连续8年 校园十佳社团榜首</span>
+            <p class="certification">
+                *基于校团委2023-2026学年校园社团综合评分报告，信创工坊综合实力位列全校Top1，累计举办活动100+场，覆盖师生3000+人次
+            </p>
+        </div>
+    </div>
+
+    <!-- 3大核心理由 -->
+    <section class="reasons-section" id="reasons">
+        <h2 class="section-title" id="reasonTitle">3 Reasons to choose XX社团</h2>
+        <div class="reasons-grid">
+            <div class="reason-card fade-in">
+                <span class="number">+345%</span>
+                <h3>成长收益</h3>
+                <p>远超校园平均水平的技能提升、实践机会与履历加成</p>
+                <p class="cert">*基于校学生会社团发展调研数据，社团成员综合能力提升幅度超普通学生345%</p>
+            </div>
+            <div class="reason-card fade-in">
+                <span class="number">8</span>
+                <h3>领先地位</h3>
+                <p>连续8年蝉联校园十佳社团，校园影响力No.1</p>
+                <p class="cert">*基于校团委年度社团评优报告，2017-2024连续8年获评校级十佳社团</p>
+            </div>
+            <div class="reason-card fade-in">
+                <span class="number">500+</span>
+                <h3>资源沉淀</h3>
+                <p>累计500+校友资源，100+校企合作渠道，丰富实践平台</p>
+                <p class="cert">*截至2025年12月，社团累计成员超500人，合作企业覆盖10+行业</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心优势板块 - 加工业风网格扫描背景 -->
+    <section class="advantage-section nanfu-grid-bg">
+        <div class="advantage-block fade-in">
+            <div class="advantage-content">
+                <h3>3大核心<br><span class="highlight">成长体系</span></h3>
+                <p><strong>超科学学习流程</strong>：零基础技能培训、学长学姐1v1带教，快速掌握新媒体运营、活动策划、商务谈判等硬核技能，为简历加分。</p>
+                <p><strong>超实际经验积累</strong>：全流程参与大型活动策划与执行，积累可落地的实践经验，提升职场核心竞争力，毕业求职快人一步。</p>
+                <p><strong>超广阔社交圈层</strong>：12年校友资源沉淀，优质人脉圈子，打破专业与年级壁垒，收获终身受益的友谊与资源。</p>
+            </div>
+            <div class="advantage-image"></div>
+        </div>
+    </section>
+
+    <!-- 部门设置 - 加工业风网格扫描背景 -->
+    <section class="department-section nanfu-grid-bg" id="departments">
+        <h2 class="section-title" id="deptTitle">Our Departments</h2>
+        <div class="department-grid">
+            <div class="department-card fade-in">
+                <span class="serial-number">01</span>
+                <h3>办公组织部</h3>
+                <p>社团核心“大管家”，负责日常管理、会议记录、成员考勤、活动统筹安排。锻炼统筹规划与细节把控能力，熟悉各类校园活动全流程。</p>
+            </div>
+            <div class="department-card fade-in">
+                <span class="serial-number">02</span>
+                <h3>宣传策划部</h3>
+                <p>社团创意担当，负责文案撰写、海报设计、短视频剪辑、公众号运营、活动创意策划。作品将登上校园官方平台，打造个人作品集。</p>
+            </div>
+            <div class="department-card fade-in">
+                <span class="serial-number">03</span>
+                <h3>活动执行部</h3>
+                <p>社团现场指挥官，负责活动现场布置、流程把控、人员协调、应急处理。提升临场应变与团队协作能力，敢想敢做就来。</p>
+            </div>
+            <div class="department-card fade-in">
+                <span class="serial-number">04</span>
+                <h3>外联部</h3>
+                <p>社团对外窗口，负责校企合作、活动赞助对接、跨校交流。锻炼商务谈判与沟通表达能力，提前接触职场，积累行业资源。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发展历程 -->
+    <section class="history-section" id="history">
+        <h2 class="section-title" id="historyTitle">Our Development History</h2>
+        <div class="timeline">
+            <div class="timeline-item" id="timeline1">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">2016</div>
+                    <p>信创工坊正式成立，成为校内首个聚焦大学生成长与实践的综合性社团</p>
+                </div>
+            </div>
+            <div class="timeline-item" id="timeline2">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">2017</div>
+                    <p>首次获评校级十佳社团，成员规模突破100人，举办首届校园品牌活动</p>
+                </div>
+            </div>
+            <div class="timeline-item" id="timeline3">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">2020</div>
+                    <p>建立完整的技能培训体系，开启校企合作模式，为成员提供实习实践机会</p>
+                </div>
+            </div>
+            <div class="timeline-item" id="timeline4">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">2024</div>
+                    <p>连续8年蝉联校级十佳社团，成员累计超500人，成为校内综合实力No.1的学生社团</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 报名板块 -->
+    <section class="contact-section" id="contact">
+        <h2 class="fade-in">加入我们，<span>解锁无限可能</span></h2>
+        <p class="sub-title fade-in">不限年级、不限专业、不限经验，零基础友好</p>
+        
+        <div class="contact-grid fade-in">
+            <div class="contact-item">
+                <h4>线上报名</h4>
+                <p>添加负责人微信<br>XXX-XXXX-XXXX<br>回复“纳新+姓名+学院”</p>
+            </div>
+            <div class="contact-item">
+                <h4>线下报名</h4>
+                <p>XX月XX日-XX月XX日<br>一餐/二餐门口摊位<br>到场即送社团定制周边</p>
+            </div>
+            <div class="contact-item">
+                <h4>咨询群聊</h4>
+                <p>QQ群号<br>XXXXXXXXX<br>实时解答所有疑问</p>
+            </div>
+        </div>
+
+        <!-- 优化：表单增加浮动标签 -->
+        <form class="signup-form fade-in" id="signupForm">
+            <div class="form-group">
+                <input type="text" id="name" placeholder=" " required>
+                <label for="name" class="form-label">姓名</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="major" placeholder=" " required>
+                <label for="major" class="form-label">学院+专业</label>
+            </div>
+            <div class="form-group">
+                <input type="tel" id="phone" placeholder=" " required>
+                <label for="phone" class="form-label">联系电话</label>
+            </div>
+            <div class="form-group">
+                <select id="dept" required>
+                    <option value="" selected disabled></option>
+                    <option value="办公组织部">办公组织部</option>
+                    <option value="宣传策划部">宣传策划部</option>
+                    <option value="活动执行部">活动执行部</option>
+                    <option value="外联部">外联部</option>
+                </select>
+                <label for="dept" class="form-label">意向部门</label>
+            </div>
+            <div class="form-group full-width">
+                <button type="submit" class="submit-btn">提交报名信息</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>以热爱为名，赴成长之约 | 信创工坊期待你的加入</p>
+        <p>© 2024 X信创工坊社团. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // 导航栏滚动效果（升级：添加scrolled类）
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // 新增：Hero区域视差效果
+            const heroContent = document.getElementById('heroContent');
+            if (heroContent) {
+                const scrollY = window.scrollY;
+                if (scrollY < window.innerHeight) {
+                    heroContent.style.transform = `translateY(${scrollY * 0.1}px)`;
+                }
+            }
+        });
+
+        // 移动端汉堡菜单
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        
+        hamburger.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            hamburger.innerHTML = navLinks.classList.contains('active') ? '×' : '≡';
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                navLinks.classList.remove('active');
+                hamburger.innerHTML = '≡';
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 滚动渐入动画（优化配置）
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // 监听所有fade-in元素
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 监听时间轴元素
+        document.querySelectorAll('.timeline-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 表单提交
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('.submit-btn');
+            const originalText = btn.innerText;
+            btn.innerText = '报名成功！我们将尽快联系你';
+            btn.style.background = '#1a1a1a';
+            btn.style.boxShadow = 'none';
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = 'linear-gradient(90deg, var(--nanfu-red), var(--nanfu-red-deep))';
+                btn.style.boxShadow = '0 4px 15px rgba(217, 33, 33, 0.2)';
+                this.reset();
+                // 重置浮动标签
+                document.querySelectorAll('.form-label').forEach(label => {
+                    label.style.top = '1.2rem';
+                    label.style.fontSize = '1rem';
+                    label.style.color = '#999';
+                });
+            }, 2000);
+        });
+
+        // 新增：标题逐字动画
+        function createCharAnimation(elementId) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const text = element.textContent;
+            element.textContent = '';
+            
+            Array.from(text).forEach((char, index) => {
+                const span = document.createElement('span');
+                span.className = 'char-animate';
+                span.style.animationDelay = `${index * 0.05}s`;
+                span.textContent = char === ' ' ? '\u00A0' : char;
+                element.appendChild(span);
+            });
+        }
+
+        // 初始化标题逐字动画
+        window.addEventListener('load', function() {
+            createCharAnimation('reasonTitle');
+            createCharAnimation('deptTitle');
+            createCharAnimation('historyTitle');
+        });
+
+        // ********** 南孚风格全局轻量粒子动态背景JS（升级：粒子连线+互动） **********
+        (function() {
+            const canvas = document.getElementById('nanfuParticles');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const mouse = { x: null, y: null, radius: 150 };
+
+            // 适配窗口大小
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // 监听鼠标移动
+            window.addEventListener('mousemove', function(e) {
+                mouse.x = e.x;
+                mouse.y = e.y;
+            });
+
+            // 粒子配置：升级为带连线的互动粒子
+            const config = {
+                particleNum: 50,
+                speed: 0.3,
+                colors: ['#ffffff', '#d92121', '#d9212140'],
+                radius: [1, 2],
+                lineDistance: 100 // 粒子连线距离
+            };
+
+            // 粒子类（升级：添加连线逻辑）
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * config.speed;
+                    this.vy = (Math.random() - 0.5) * config.speed;
+                    this.color = config.colors[Math.floor(Math.random() * config.colors.length)];
+                    this.r = Math.random() * (config.radius[1] - config.radius[0]) + config.radius[0];
+                }
+                update() {
+                    // 边界反弹
+                    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                    
+                    // 鼠标互动：粒子靠近鼠标时偏移
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const maxDistance = mouse.radius;
+                    const force = (maxDistance - distance) / maxDistance;
+                    
+                    if (distance < mouse.radius) {
+                        this.x -= forceDirectionX * force * 1.5;
+                        this.y -= forceDirectionY * force * 1.5;
+                    }
+
+                    this.x += this.vx;
+                    this.y += this.vy;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+
+            // 绘制粒子连线
+            function connectParticles() {
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a; b < particles.length; b++) {
+                        const dx = particles[a].x - particles[b].x;
+                        const dy = particles[a].y - particles[b].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < config.lineDistance) {
+                            const opacity = 1 - (distance / config.lineDistance);
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(217, 33, 33, ${opacity * 0.2})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            // 初始化粒子
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < config.particleNum; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            // 动画循环（升级：添加连线绘制）
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                connectParticles();
+                requestAnimationFrame(animate);
+            }
+
+            initParticles();
+            animate();
+
+            // 鼠标离开时重置
+            window.addEventListener('mouseout', function() {
+                mouse.x = null;
+                mouse.y = null;
+            });
+        })();
+    </script>
+</body>
+</html>
